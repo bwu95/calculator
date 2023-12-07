@@ -10,6 +10,9 @@
 }
 
 .screen {
+    display: flex; 
+    flex-direction: column-reverse; 
+    text-align: right; 
     border-radius: 5px; 
     margin: 15px; 
     width: 350px; 
