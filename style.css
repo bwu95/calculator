@@ -39,10 +39,15 @@
     flex: 1; 
     text-align: center; 
     border-radius: 5px; 
-    background-color: #aaaaff; 
+    background-color: #99e; 
     margin-left: 8px; 
 }
-
+#dlt-btn:hover {
+    background-color: #88d;
+}
+#clr-btn:hover {
+    background-color: rgb(208, 120, 120);
+}
 .calculation-btns {
     display: flex; 
     flex-direction: column; 
@@ -62,3 +67,10 @@
     border-radius: 5px; 
 }
 
+.calculation-btns button:hover {
+    background-color: #ddd; 
+}
+
+/* .screen h1 {
+    font-size: 40px; 
+} */
