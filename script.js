@@ -4,11 +4,15 @@ let operator = '';
 let userInput = ''; 
 let decimalClicked = false; 
 let errorMsg = 'NaN'; 
+let shiftKey = false; 
 
 let operatorButtons = document.querySelectorAll('.operation'); 
 let numberButton = document.querySelectorAll('.num');           //nodelist of all numbers  
 let clearButton = document.getElementById('clr-btn');     
-let deleteButton = document.getElementById('dlt-btn');          //delete DOM element       
+let deleteValue = document.getElementById('dlt-btn');          //delete DOM element    
+
+deleteValue.addEventListener('click', deleteButton); 
+clearButton.addEventListener('click', resetValues); 
 
 function add(num1, num2) {
     return num1 + num2; 
@@ -27,7 +31,6 @@ function divide(num1, num2) {
         return num1 / num2; 
     }
     else {
-        console.error('cannot divide by 0');    
         return NaN; 
     }
 }
@@ -74,7 +77,10 @@ numberButton.forEach(function(button) {
 //update values when user clicks on an operation 
 operatorButtons.forEach(function(operatorButton) {
     operatorButton.addEventListener('click', function() {   
-
+        //check if user clicks operation without any input and no first operand 
+        if(firstOperand === null && userInput === '') {                                              //check if user clicks operation first without any input 
+            return; 
+        }
         if(operator === '' && operatorButton.textContent !== '=') {                       
             operator = operatorButton.textContent; 
             
@@ -90,10 +96,11 @@ operatorButtons.forEach(function(operatorButton) {
         else if(operator !== '' && userInput === '') {                          //change operation if there was initial operation and no second operand
             operator = operatorButton.textContent; 
         }
-        else if(firstOperand && parseFloat(userInput) === 0) {
+        else if(firstOperand && parseFloat(userInput) === 0) {                  //check if dividing by 0 
             displayVal(errorMsg); 
         }
-        else if(operatorButton.textContent === '=' && firstOperand) {           //when user enters = for doing calculation
+ 
+        else if(operatorButton.textContent === '=' && firstOperand) {           //when user click = for doing calculation
              secondOperand = parseFloat(userInput); 
              firstOperand = operate(firstOperand, secondOperand, operator);     
              displayVal(firstOperand); 
@@ -115,19 +122,100 @@ operatorButtons.forEach(function(operatorButton) {
     })
 })
 
-//reset all values when clearing the screen 
-clearButton.addEventListener('click', function() {
-    firstOperand = null; 
-    secondOperand = null;  
-    userInput = ''; 
-    operator = ''; 
-    decimalClicked = false;
-    displayVal('0'); 
+//handling keyboard support for number input values 
+document.addEventListener('keydown', function(event) {
+    let key = event.key; 
 
-}) 
+    if(key === 'Enter') {
+        event.preventDefault(); 
+    }
 
-//delete most recent number a user has clicked 
-deleteButton.addEventListener('click', function() {
+    if(key === 'Shift') {
+        shiftKey = true; 
+        return; 
+    }
+    else if(key === 'Escape') {
+        resetValues(); 
+    }
+    else if(key === 'Backspace') {
+        deleteButton(); 
+    }
+
+    //add to user input if it's a number 
+    if(!isNaN(key) || key === '.') {
+        if(key === '.' && decimalClicked) {
+            return; 
+        }
+        if(firstOperand !== null && operator == '') {        //user does operation on two number, then press number with no operation
+            firstOperand = null; 
+        }
+        userInput += key; 
+        displayVal(userInput); 
+    }
+    //check if user pressed operator 
+    if(shiftKey && ['+', '*'].includes(key) ){
+        operatorKeyboardClick(key); 
+    }
+    else if(['=', '-', '/', 'Enter'].includes(key)) {
+        operatorKeyboardClick(key); 
+    }
+
+    if(key === '.') {
+        decimalClicked = true; 
+    }
+})
+
+//handling of keyboard support operations 
+function operatorKeyboardClick(clickedOperator) {
+    //check if user clicks on operation without any values 
+    if(firstOperand === null && userInput === '') {                                              //check if user clicks operation first without any input 
+        return; 
+    }
+    //first operation being done   
+    if(operator === '' && clickedOperator !== '=') {
+        operator = clickedOperator; 
+        //add value to first operand if empty
+        if(firstOperand === null) {
+            firstOperand = parseFloat(userInput); 
+            userInput = '';  
+            decimalClicked = false; 
+        }
+    }
+    else if(operator === '' && clickedOperator === '=') {
+        return; 
+    }
+    else if(operator !== '' && userInput === '') {                          //change operation if there was initial operation and no second operand
+        operator = clickedOperator; 
+    }
+    else if((clickedOperator === '=' || clickedOperator === 'Enter') && firstOperand) {
+        secondOperand = parseFloat(userInput); 
+        firstOperand = operate(firstOperand, secondOperand, operator);     
+        displayVal(firstOperand); 
+        secondOperand = null; 
+        operator = '';                                                     //reset operator 
+        userInput = ''; 
+        decimalClicked = false;        
+    }
+    else {
+        secondOperand = parseFloat(userInput); 
+        firstOperand = operate(firstOperand, secondOperand, operator);     
+        displayVal(firstOperand);                        
+        operator = clickedOperator;                              
+        secondOperand = null; 
+        userInput = ''; 
+        decimalClicked = false;      
+    }
+}
+
+document.addEventListener('keyup', function(event) {
+    const key = event.key;
+
+    if (key === 'Shift') {
+        shiftKey = false;
+    }
+});
+
+function deleteButton() {
     if(userInput.length === 0 && firstOperand !== null) {       //check if no input for second operand, delete first operand
         firstOperand = firstOperand.toString().slice(0, -1); 
         if (firstOperand === '') {
@@ -145,7 +233,17 @@ deleteButton.addEventListener('click', function() {
     if(userInput.indexOf('.') === -1) {
         decimalClicked = false; 
     }
-} )
+}
+
+//reset all values when clearing screen 
+function resetValues() {
+    firstOperand = null; 
+    secondOperand = null;  
+    userInput = ''; 
+    operator = ''; 
+    decimalClicked = false;
+    displayVal('0'); 
+}
 
 function displayVal(val) {
     document.querySelector('.screen h1').textContent = val; 
