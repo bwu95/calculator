@@ -103,6 +103,7 @@ operatorButtons.forEach(function(operatorButton) {
         else if(operatorButton.textContent === '=' && firstOperand) {           //when user click = for doing calculation
              secondOperand = parseFloat(userInput); 
              firstOperand = operate(firstOperand, secondOperand, operator);     
+             firstOperand = roundResult(firstOperand); 
              displayVal(firstOperand); 
              secondOperand = null; 
              operator = '';                                                     //reset operator 
@@ -112,6 +113,7 @@ operatorButtons.forEach(function(operatorButton) {
         else {                                                                          //when user clicks operation other than = 
             secondOperand = parseFloat(userInput); 
             firstOperand = operate(firstOperand, secondOperand, operator);      //first operand becomes value of operation on two numbers
+            firstOperand = roundResult(firstOperand); 
             displayVal(firstOperand);                        
             operator = operatorButton.textContent;                              //if user did not click =, make new operation operatorbutton.textContent
             secondOperand = null; 
@@ -189,7 +191,8 @@ function operatorKeyboardClick(clickedOperator) {
     }
     else if((clickedOperator === '=' || clickedOperator === 'Enter') && firstOperand) {
         secondOperand = parseFloat(userInput); 
-        firstOperand = operate(firstOperand, secondOperand, operator);     
+        firstOperand = operate(firstOperand, secondOperand, operator); 
+        firstOperand = roundResult(firstOperand);     
         displayVal(firstOperand); 
         secondOperand = null; 
         operator = '';                                                     //reset operator 
@@ -198,7 +201,8 @@ function operatorKeyboardClick(clickedOperator) {
     }
     else {
         secondOperand = parseFloat(userInput); 
-        firstOperand = operate(firstOperand, secondOperand, operator);     
+        firstOperand = operate(firstOperand, secondOperand, operator);   
+        firstOperand = roundResult(firstOperand);   
         displayVal(firstOperand);                        
         operator = clickedOperator;                              
         secondOperand = null; 
@@ -244,6 +248,11 @@ function resetValues() {
     decimalClicked = false;
     displayVal('0'); 
 }
+
+function roundResult(number) {
+    return Math.round(number * 1000) / 1000
+  }
+
 
 function displayVal(val) {
     document.querySelector('.screen h1').textContent = val; 

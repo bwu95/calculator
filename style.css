@@ -6,7 +6,9 @@
     width: 400px; 
     height: 550px;
     border-radius: 15px; 
-    background-color: gray; 
+    background-color: #aaa; 
+    border: 1.5px solid; 
+
 }
 
 .screen {
@@ -33,6 +35,8 @@
     border-radius: 5px; 
     margin-right: 8px;
     background-color: #ffaaaa; 
+    font-weight: bold;
+    border: 1.5px solid; 
 }
 
 #dlt-btn {
@@ -41,6 +45,8 @@
     border-radius: 5px; 
     background-color: #99e; 
     margin-left: 8px; 
+    font-weight: bold; 
+    border: 1.5px solid; 
 }
 #dlt-btn:hover {
     background-color: #88d;
@@ -65,12 +71,10 @@
     flex: 1; 
     margin: 5px; 
     border-radius: 5px; 
+    border: 1.5px solid; 
+    font-weight: bold; 
 }
 
 .calculation-btns button:hover {
     background-color: #ddd; 
 }
-
-/* .screen h1 {
-    font-size: 40px; 
-} */
