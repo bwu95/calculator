@@ -64,7 +64,9 @@ numberButton.forEach(function(button) {
             firstOperand = null; 
         }
 
-        userInput += button.textContent; 
+        if(userInput.length <= 13) {
+            userInput += button.textContent; 
+        }
 
         if(button.textContent === '.') {
             decimalClicked = true; 
@@ -78,39 +80,33 @@ numberButton.forEach(function(button) {
 operatorButtons.forEach(function(operatorButton) {
     operatorButton.addEventListener('click', function() {   
         //check if user clicks operation without any input and no first operand 
-        if(firstOperand === null && userInput === '') {                                              //check if user clicks operation first without any input 
+        if (firstOperand === null && userInput === '') {                                              //check if user clicks operation first without any input 
             return; 
         }
-        if(operator === '' && operatorButton.textContent !== '=') {                       
+        if (operator === '' && operatorButton.textContent !== '=') {                       
             operator = operatorButton.textContent; 
             
-            if(firstOperand === null) {
+            if (firstOperand === null) {
                 firstOperand = parseFloat(userInput); 
                 userInput = '';  
                 decimalClicked = false; 
             }
-        }
-        else if(operator === '' && operatorButton.textContent === '=') {
+        } else if (operator === '' && operatorButton.textContent === '=') {
             return; 
-        }
-        else if(operator !== '' && userInput === '') {                          //change operation if there was initial operation and no second operand
+        } else if (operator !== '' && userInput === '') {                          //change operation if there was initial operation and no second operand
             operator = operatorButton.textContent; 
-        }
-        else if(firstOperand && parseFloat(userInput) === 0) {                  //check if dividing by 0 
+        } else if (firstOperand && parseFloat(userInput) === 0) {                  //check if dividing by 0 
             displayVal(errorMsg); 
-        }
- 
-        else if(operatorButton.textContent === '=' && firstOperand) {           //when user click = for doing calculation
-             secondOperand = parseFloat(userInput); 
-             firstOperand = operate(firstOperand, secondOperand, operator);     
-             firstOperand = roundResult(firstOperand); 
-             displayVal(firstOperand); 
-             secondOperand = null; 
-             operator = '';                                                     //reset operator 
-             userInput = ''; 
-             decimalClicked = false; 
-        }
-        else {                                                                          //when user clicks operation other than = 
+        } else if (operatorButton.textContent === '=' && firstOperand) {           //when user click = for doing calculation
+            secondOperand = parseFloat(userInput); 
+            firstOperand = operate(firstOperand, secondOperand, operator);  
+            firstOperand = roundResult(firstOperand); 
+            displayVal(firstOperand); 
+            secondOperand = null; 
+            operator = '';                                                     //reset operator 
+            userInput = ''; 
+            decimalClicked = false; 
+        } else {                                                                          //when user clicks operation other than = 
             secondOperand = parseFloat(userInput); 
             firstOperand = operate(firstOperand, secondOperand, operator);      //first operand becomes value of operation on two numbers
             firstOperand = roundResult(firstOperand); 
@@ -120,7 +116,6 @@ operatorButtons.forEach(function(operatorButton) {
             userInput = ''; 
             decimalClicked = false; 
         }
-
     })
 })
 
@@ -128,41 +123,39 @@ operatorButtons.forEach(function(operatorButton) {
 document.addEventListener('keydown', function(event) {
     let key = event.key; 
 
-    if(key === 'Enter') {
+    if (key === 'Enter') {
         event.preventDefault(); 
     }
 
-    if(key === 'Shift') {
+    if (key === 'Shift') {
         shiftKey = true; 
-        return; 
-    }
-    else if(key === 'Escape') {
+    } else if (key === 'Escape') {
         resetValues(); 
-    }
-    else if(key === 'Backspace') {
+    } else if (key === 'Backspace') {
         deleteButton(); 
     }
 
     //add to user input if it's a number 
-    if(!isNaN(key) || key === '.') {
+    if ((!isNaN(key) || key === '.') && key !== ' ') {
         if(key === '.' && decimalClicked) {
             return; 
         }
         if(firstOperand !== null && operator == '') {        //user does operation on two number, then press number with no operation
             firstOperand = null; 
         }
-        userInput += key; 
-        displayVal(userInput); 
+        if (userInput.length <= 13) {
+            userInput += key; 
+            displayVal(userInput); 
+        }
     }
     //check if user pressed operator 
-    if(shiftKey && ['+', '*'].includes(key) ){
+    if (shiftKey && ['+', '*'].includes(key) ) {
         operatorKeyboardClick(key); 
-    }
-    else if(['=', '-', '/', 'Enter'].includes(key)) {
+    } else if(['=', '-', '/', 'Enter'].includes(key)) {
         operatorKeyboardClick(key); 
     }
 
-    if(key === '.') {
+    if (key === '.') {
         decimalClicked = true; 
     }
 })
@@ -170,26 +163,23 @@ document.addEventListener('keydown', function(event) {
 //handling of keyboard support operations 
 function operatorKeyboardClick(clickedOperator) {
     //check if user clicks on operation without any values 
-    if(firstOperand === null && userInput === '') {                                              //check if user clicks operation first without any input 
+    if (firstOperand === null && userInput === '') {                                              //check if user clicks operation first without any input 
         return; 
     }
     //first operation being done   
-    if(operator === '' && clickedOperator !== '=') {
+    if (operator === '' && clickedOperator !== '=') {
         operator = clickedOperator; 
         //add value to first operand if empty
-        if(firstOperand === null) {
+        if (firstOperand === null) {
             firstOperand = parseFloat(userInput); 
             userInput = '';  
             decimalClicked = false; 
         }
-    }
-    else if(operator === '' && clickedOperator === '=') {
+    } else if (operator === '' && clickedOperator === '=') {
         return; 
-    }
-    else if(operator !== '' && userInput === '') {                          //change operation if there was initial operation and no second operand
+    } else if (operator !== '' && userInput === '') {                          //change operation if there was initial operation and no second operand
         operator = clickedOperator; 
-    }
-    else if((clickedOperator === '=' || clickedOperator === 'Enter') && firstOperand) {
+    } else if ((clickedOperator === '=' || clickedOperator === 'Enter') && firstOperand) {
         secondOperand = parseFloat(userInput); 
         firstOperand = operate(firstOperand, secondOperand, operator); 
         firstOperand = roundResult(firstOperand);     
@@ -198,8 +188,7 @@ function operatorKeyboardClick(clickedOperator) {
         operator = '';                                                     //reset operator 
         userInput = ''; 
         decimalClicked = false;        
-    }
-    else {
+    } else {
         secondOperand = parseFloat(userInput); 
         firstOperand = operate(firstOperand, secondOperand, operator);   
         firstOperand = roundResult(firstOperand);   
@@ -228,8 +217,7 @@ function deleteButton() {
             firstOperand = parseFloat(firstOperand); 
         }
         displayVal(firstOperand); 
-    }
-    else if(userInput.length > 0) {
+    } else if (userInput.length > 0) {
         userInput = userInput.slice(0, -1); 
         displayVal(userInput); 
     }
@@ -252,7 +240,6 @@ function resetValues() {
 function roundResult(number) {
     return Math.round(number * 1000) / 1000
   }
-
 
 function displayVal(val) {
     document.querySelector('.screen h1').textContent = val; 

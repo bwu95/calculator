@@ -8,7 +8,6 @@
     border-radius: 15px; 
     background-color: #aaa; 
     border: 1.5px solid; 
-
 }
 
 .screen {
@@ -20,7 +19,13 @@
     width: 350px; 
     height: 115px; 
     background-color: #eeeeee;
-    border: 2px solid; 
+    border: 1.5px solid; 
+    word-break: break-word; 
+}   
+
+.screen h1 {
+    font-size: 3em;
+    margin: 0; 
 }
 
 .clr-dlt-btns {
@@ -77,4 +82,8 @@
 
 .calculation-btns button:hover {
     background-color: #ddd; 
+}
+
+.calculation-btns button:active {
+    background-color: #ccc; 
 }
